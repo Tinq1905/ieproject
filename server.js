@@ -43,6 +43,11 @@ function sendBack (url,res) {
 			for (i=0;i<5;i++){
 				foo.push(results[i].name);
 				foo.push(results[i].geometry.location);
+				foo.push(results[i].opening_hours.open_now);
+				foo.push(results[i].place_id);
+				foo.push(results[i].price_level);
+				foo.push(results[i].rating);
+				foo.push(results[i].vicinity);
 			};
 			res.send(foo);
 		});
