@@ -12,40 +12,13 @@ app.use('/static', express.static('public'));
 
 app.listen(3000, () => {
     console.log('listening on 3000')
-  })
-
-app.get('/test',function(req, res){
-	console.log(res);
-	res.send("back!")
 })
 
-app.post("/api",function(req,res){
-	var type = req.query.searchType;
-	var location = req.query.myLocation;
-	var radius = 500;
-	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var furl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+location+"&radius="+radius+"&types="+type+"&name=cruise"+"&key="+gkey +"&rankby=prominence";
-	var turl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670,151.1957&radius=500&types=food&name=cruise&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	https.get(furl, function(response) {
-		var body ='';
-		response.on('data', function(chunk) {
-			body += chunk;
-			console.log(body);
-		})
-		response.on('end', function(body){
-			var places = [];
-			var place;
-			for(i=0;i<5;i++){
-				place = body.results;
-				places.push(place);
-				console.log(places);
-			}
-			result = JSON.parse(places);
-			res.json(result);
-		})
-	})
-
+app.get("/test",function(req,res){
+	console.log("Test");
+	res.send("Test - Techsquad");
 })
+
 app.get("/apitest", function(req, res){
 	var type = req.query.searchType;
 	var location = req.query.myLocation;
@@ -67,7 +40,7 @@ function sendBack (url,res) {
 			places = JSON.parse(body);
 			var results = places.results;
 			console.log(results[0]);
-			for (i=0;i<3;i++){
+			for (i=0;i<5;i++){
 				foo.push(results[i].name);
 				foo.push(results[i].geometry.location);
 			};
@@ -75,8 +48,5 @@ function sendBack (url,res) {
 		});
 	})
 }
-//*
-//back
 
-	
 
