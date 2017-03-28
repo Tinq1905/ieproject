@@ -196,11 +196,5 @@ function sendBackTest (url,res) {
 	})
 }
 
-function processTest (location, sendBackToHere){
-	next();
-}
-function sendBackToHere(){
-	console.log("success!");
-}
 
 
