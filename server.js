@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const https = require("https");
-
+const async = require("async");
 const app = express();
 
 var db;
@@ -14,10 +14,106 @@ app.listen(3000, () => {
     console.log('listening on 3000')
 })
 
+/*
+async.waterfall([basicInfo,detailedInfo],function(err, result){
+    if(err){
+        console.log(err);
+    }
+	console.log(result);
+});
+*/
+function thePlace(){
+	this.place_id = "";
+	this.name = "";
+	this.location = "";
+	this.opening_hours = "";
+	this.address = "";
+	this.numbers = "";
+	this.rating = "";
+	this.price_level = "";
+	this.website = "";
+	this.url = "";
+	this.photo_reference = "";
+	this.height = "";
+	this.width = "";
+}
+//function passPara(callback);
+function basicInfo(type,location,callback){
+	var final = [];
+	var atype = type;
+	var alocation = location;
+	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+gkey;
+	https.get(purl, function(response) {
+		var body ="";
+		response.on('data', function(chunk) {
+			body += chunk;
+		})
+		response.on('end', function () {
+			places = JSON.parse(body);
+			var results = places.results;
+			for (i=0;i<10;i++){
+				var myPlace = new thePlace();
+				myPlace.name = results[i].name;
+				myPlace.location = results[i].geometry.location;
+				myPlace.opening_hours = results[i].opening_hours;
+				myPlace.place_id = results[i].place_id;
+				myPlace.price_level = results[i].price_level;
+				myPlace.rating = results[i].rating;
+				//myPlace.photo_reference = results[i].photos.photo_reference;
+				//myPlace.width = results[i].photos.width;
+				//myPlace.height = results[i].photos.height;
+				final.push(myPlace);
+			}
+			callback(null,final);
+		})
+	})
+}
+
+function detailedInfo(final,callback){
+    var count = 0;
+	for (i=0;i<10;i++){
+        ++count;
+        var j = i;
+		var placeId = final[i].place_id;
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
+        function back (durl,i){
+		https.get(durl,function(response) {
+			var body ="";
+			response.on('data', function(chunk) {
+				body += chunk;
+			})
+			response.on('end', function () {
+				places = JSON.parse(body);
+				var results = places.result;
+				final[i].address = results.formatted_address;
+				final[i].numbers = results.formatted_phone_number;
+				final[i].website = results.website;
+				final[i].url = results.url;
+				final[i].phote = results.photo_reference;
+                --count;
+                if (count === 0){
+                    callback(null,final);
+                };
+			})
+		})}
+        back(durl,i);
+	}
+    
+}
+
 app.get("/test",function(req,res){
+	var type = req.query.searchType;
+	var location = req.query.myLocation;
+	async.waterfall([async.apply(basicInfo,type,location),detailedInfo],function(err, result){
+		if(err){
+			console.log(err);
+		}
+		console.log(result);
+		res.send(result);
+	});
 	console.log("Test");
-	res.send("Test - Techsquad");
-})
+});
 
 app.get("/api", function(req, res){
 	var type = req.query.searchType;
@@ -28,32 +124,6 @@ app.get("/api", function(req, res){
 	var turl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670,151.1957&types=food&rankby=distance&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
 	sendBack(furl,res);
 })
-
-app.get("/apitest", function(req, res){
-	var type = req.query.searchType;
-	var location = req.query.myLocation;
-	var radius = 500;
-	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var furl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+location +"&types="+type + "&rankby=distance" + "&key="+gkey;
-	var turl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670,151.1957&types=food&rankby=distance&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	sendBackTest(furl,res);
-})
-
-function sendBackTest (url,res) {
-	var foo = [];
-	https.get(url, function(response) {
-		var body ="";
-		response.on('data', function(chunk) {
-			body += chunk;
-		})
-		response.on('end', function () {
-			places = JSON.parse(body);
-			var results = places.results;
-			res.send(results);
-		});
-	})
-}
-
 function sendBack (url,res) {
 	var foo = [];
 	https.get(url, function(response) {
@@ -77,6 +147,60 @@ function sendBack (url,res) {
 			res.send(foo);
 		});
 	})
+}
+
+app.get("/apitest", function(req, res){
+	var type = req.query.searchType;
+	var location = req.query.myLocation;
+	var placeId = "here";
+	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ location +"&types="+type + "&rankby=distance" + "&key="+gkey;
+	var examp ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670,151.1957&types=food&rankby=distance&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
+	var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
+	var foo = [];
+	var thePlaceId = [];
+	https.get(url, function(response) {
+		var body ="";
+		response.on('data', function(chunk) {
+			body += chunk;
+		})
+		response.on('end', function () {
+			places = JSON.parse(body);
+			var results = places.results;
+			res.send(results);
+			for (i=0;i<5;i++){
+				foo.push(results[i].name);
+				foo.push(results[i].geometry.location);
+				foo.push(results[i].opening_hours);
+				thePlaceId.push(results[i].place_id);
+				foo.push(results[i].price_level);
+				foo.push(results[i].rating);
+			}
+
+		});
+	});
+	sendBackTest(purl,res);
+});
+function sendBackTest (url,res) {
+	var foo = [];
+	https.get(url, function(response) {
+		var body ="";
+		response.on('data', function(chunk) {
+			body += chunk;
+		})
+		response.on('end', function () {
+			places = JSON.parse(body);
+			var results = places.results;
+			res.send(results);
+		});
+	})
+}
+
+function processTest (location, sendBackToHere){
+	next();
+}
+function sendBackToHere(){
+	console.log("success!");
 }
 
 
