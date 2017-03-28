@@ -33,11 +33,9 @@ function thePlace(){
 	this.price_level = "";
 	this.website = "";
 	this.url = "";
-	this.photo_reference = "";
-	this.height = "";
-	this.width = "";
+	this.photos = "";
 }
-//function passPara(callback);
+
 function basicInfo(type,location,callback){
 	var final = [];
 	var atype = type;
@@ -60,9 +58,6 @@ function basicInfo(type,location,callback){
 				myPlace.place_id = results[i].place_id;
 				myPlace.price_level = results[i].price_level;
 				myPlace.rating = results[i].rating;
-				//myPlace.photo_reference = results[i].photos.photo_reference;
-				//myPlace.width = results[i].photos.width;
-				//myPlace.height = results[i].photos.height;
 				final.push(myPlace);
 			}
 			callback(null,final);
@@ -74,7 +69,6 @@ function detailedInfo(final,callback){
     var count = 0;
 	for (i=0;i<10;i++){
         ++count;
-        var j = i;
 		var placeId = final[i].place_id;
 		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
         function back (durl,i){
@@ -90,16 +84,15 @@ function detailedInfo(final,callback){
 				final[i].numbers = results.formatted_phone_number;
 				final[i].website = results.website;
 				final[i].url = results.url;
-				final[i].phote = results.photo_reference;
+				final[i].photos = results.photos;
                 --count;
                 if (count === 0){
                     callback(null,final);
-                };
+                };	
 			})
 		})}
         back(durl,i);
-	}
-    
+	}   
 }
 
 app.get("/test",function(req,res){
