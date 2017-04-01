@@ -61,8 +61,9 @@ function basicInfo(type,location,callback){
 	var atype = type;
 	var alocation = location;
 	var shishirakey = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
+	var g1key = "AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
 	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+shishirakey;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
 	https.get(purl, function(response) {
 		var body ="";
 		response.on('data', function(chunk) {
@@ -70,20 +71,16 @@ function basicInfo(type,location,callback){
 		})
 		response.on('end', function () {
 			places = JSON.parse(body);
-			if(checkResu(places)){
-				var results = places.results;
-				for (i=0;i<10;i++){
-					var myPlace = new thePlace();
-					myPlace.name = results[i].name;
-					myPlace.location = results[i].geometry.location;
-					myPlace.open_now = checkUnd(results[i].opening_hours);
-					myPlace.place_id = results[i].place_id;
-					myPlace.price_level = results[i].price_level;
-					myPlace.rating = results[i].rating;
-					final.push(myPlace);
-				}
-			}else{
-				console.log("no results");
+			var results = places.results;
+			for (i=0;i<5;i++){
+				var myPlace = new thePlace();
+				myPlace.name = results[i].name;
+				myPlace.location = results[i].geometry.location;
+				myPlace.open_now = checkUnd(results[i].opening_hours);
+				myPlace.place_id = results[i].place_id;
+				myPlace.price_level = results[i].price_level;
+				myPlace.rating = results[i].rating;
+				final.push(myPlace);
 			}
 			callback(null,final);
 		})
@@ -92,10 +89,10 @@ function basicInfo(type,location,callback){
 
 function detailedInfo(final,callback){
     var count = 0;
-	for (i=0;i<10;i++){
+	for (i=0;i<5;i++){
         ++count;
 		var placeId = final[i].place_id;
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
         function back (durl,i){
 		https.get(durl,function(response) {
 			var body ="";
