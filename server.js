@@ -76,7 +76,7 @@ function basicInfo(type,location,callback){
 		response.on('end', function () {
 			places = JSON.parse(body);
 			var results = places.results;
-			for (i=0;i<5;i++){
+			for (i=0;i<10;i++){
 				var myPlace = new thePlace();
 				myPlace.name = results[i].name;
 				myPlace.location = results[i].geometry.location;
@@ -93,7 +93,7 @@ function basicInfo(type,location,callback){
 
 function detailedInfo(final,callback){
     var count = 0;
-	for (i=0;i<5;i++){
+	for (i=0;i<10;i++){
         ++count;
 		var placeId = final[i].place_id;
 		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
