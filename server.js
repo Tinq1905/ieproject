@@ -60,18 +60,14 @@ function basicInfo(type,location,callback){
 	var final = [];
 	var atype = type;
 	var alocation = location;
-<<<<<<< HEAD
 	var shishirakey = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var g1key = "AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
 	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
-=======
 	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
 	var gkey = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+s1key;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
 	console.log(purl);
->>>>>>> 7fa6514fbffd269ab17bf65eeaef177d7f932916
 	https.get(purl, function(response) {
 		var body ="";
 		response.on('data', function(chunk) {
@@ -100,12 +96,8 @@ function detailedInfo(final,callback){
 	for (i=0;i<5;i++){
         ++count;
 		var placeId = final[i].place_id;
-<<<<<<< HEAD
 		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
-=======
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 		console.log(durl);;
->>>>>>> 7fa6514fbffd269ab17bf65eeaef177d7f932916
         function back (durl,i){
 		https.get(durl,function(response) {
 			var body ="";
