@@ -182,7 +182,11 @@ app.get("/apitest", function(req, res){
 })
 
 app.get("/testpy", function(req, res){
-	PythonShell.run('try.py', function (err,results) {
+	var loc = req.query.myLocation;
+	var options = {
+		args:[loc]
+	};
+	PythonShell.run('try.py', options, function (err,results) {
 		if (err) throw err;
 		res.send(results);
 	});
