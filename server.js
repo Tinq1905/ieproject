@@ -3,8 +3,10 @@ const bodyParser = require("body-parser");
 const https = require("https");
 const async = require("async");
 const app = express();
+const MongoClient = require("mongodb").MongoClient;
+var PythonShell = require('python-shell');
 
-var db;
+var mdb;
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/static', express.static('public'));
@@ -115,6 +117,53 @@ function detailedInfo(final,callback){
 	}   
 }
 
+function mlabConnect(callback){
+    MongoClient.connect('mongodb://admin:fit5120@ds149700.mlab.com:49700/hospitallocs', (err, database) => {
+    if (err) return console.log(err);
+    mdb = database;
+    console.log("success");
+	callback(null);
+    })
+}
+
+function findHospital(location,callback){
+	var hospitalResult = [];
+	var doc = mdb.collection('hosp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [145.1195693,-37.9193937]},$maxDistance: 5000}}}).limit(3).each(function(err,result){
+		if(result == null){
+			mdb.close();
+			callback(null,hospitalResult);
+		}
+		hospitalResult.push(result);
+	});
+}
+
+function findPolice(location,callback){
+	var policeResult = [];
+	var doc = mdb.collection('police').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [145.1195693,-37.9193937]},$maxDistance: 5000}}}).limit(3).each(function(err,result){
+		if(result == null){
+			mdb.close();
+			callback(null,policeResult);
+		}
+		policeResult.push(result);
+	});
+}
+app.get("/emergency",function(req,res){
+	var type = req.query.searchType;
+	var location = req.query.myLocation;
+	switch(type){
+		case "hospital":
+		async.waterfall([mlabConnect,async.apply(findHospital,location)],function(err,result){
+			console.log(result);
+			res.send(result);
+		});
+		break;
+		case "police":
+		async.waterfall([mlabConnect,async.apply(findPolice,location)],function(err,result){
+			res.send(result);
+		});
+		break;
+	}
+})
 app.get("/test",function(req,res){
 	var type = req.query.searchType;
 	var location = req.query.myLocation;
@@ -131,5 +180,14 @@ app.get("/test",function(req,res){
 app.get("/apitest", function(req, res){
 	res.send("test");
 })
+
+app.get("/testpy", function(req, res){
+	PythonShell.run('try.py', function (err,results) {
+		if (err) throw err;
+		res.send(results);
+	});
+})
+
+
 
 
