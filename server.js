@@ -186,6 +186,10 @@ function findGPL(language,callback){
 					GPLResult.push(result);
 				})
 			}
+			else{
+			mdb.close();
+			callback(null, GPLResult);
+			}
 		}
 		GPLResult.push(result);
 	})
