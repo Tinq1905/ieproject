@@ -126,9 +126,13 @@ function mlabConnect(callback){
     })
 }
 
-function findHospital(location,callback){
+function findHospital(thelocation,callback){
 	var hospitalResult = [];
-	var doc = mdb.collection('hosp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [145.1195693,-37.9193937]},$maxDistance: 5000}}}).limit(3).each(function(err,result){
+	var location = thelocation.split(',');
+	var location1 = parseFloat(location[0]);
+	var location2 = parseFloat(location[1]);
+	console.log(location);
+	var doc = mdb.collection('hosp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 10000}}}).limit(3).each(function(err,result){
 		if(result == null){
 			mdb.close();
 			callback(null,hospitalResult);
@@ -137,9 +141,12 @@ function findHospital(location,callback){
 	});
 }
 
-function findPolice(location,callback){
+function findPolice(thelocation,callback){
 	var policeResult = [];
-	var doc = mdb.collection('police').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [145.1195693,-37.9193937]},$maxDistance: 5000}}}).limit(3).each(function(err,result){
+	var location = thelocation.split(',');
+	var location1 = parseFloat(location[0]);
+	var location2 = parseFloat(location[1]);
+	var doc = mdb.collection('police').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 10000}}}).limit(3).each(function(err,result){
 		if(result == null){
 			mdb.close();
 			callback(null,policeResult);
@@ -147,6 +154,21 @@ function findPolice(location,callback){
 		policeResult.push(result);
 	});
 }
+
+function findGP(thelocation,callback){
+	var GPResult = [];
+	var location = thelocation.split(',');
+	var location1 = parseFloat(location[0]);
+	var location2 = parseFloat(location[1]);
+	var doc = mdb.collection('gp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 10000}}}).limit(3).each(function(err,result){
+		if(result == null){
+			mdb.close();
+			callback(null,GPResult);
+		}
+		GPResult.push(result);
+	});
+}
+
 app.get("/emergency",function(req,res){
 	var type = req.query.searchType;
 	var location = req.query.myLocation;
@@ -162,6 +184,12 @@ app.get("/emergency",function(req,res){
 			res.send(result);
 		});
 		break;
+		case "gp":
+		async.waterfall([mlabConnect,async.apply(findGP,location)],function(err,result){
+			res.send(result);
+		});
+		break;
+
 	}
 })
 app.get("/test",function(req,res){
