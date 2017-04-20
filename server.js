@@ -57,7 +57,7 @@ function basicInfo(type,location,callback){
 	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
 	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+s1key;
 	console.log(purl);
 	https.get(purl, function(response) {
 		var body ="";
@@ -91,7 +91,7 @@ function detailedInfo(final,callback){
 	for (i=0;i<10;i++){
         ++count;
 		var placeId = final[i].place_id;
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + g1key;
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + s1key;
 		console.log(durl);;
         function back (durl,i){
 		https.get(durl,function(response) {
