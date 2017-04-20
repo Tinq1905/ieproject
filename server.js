@@ -168,10 +168,33 @@ function findGP(thelocation,callback){
 		GPResult.push(result);
 	});
 }
+function findGPL(language,callback){
+	var GPLResult = [];
+	var doc = mdb.collection('gp').find({ language: language}).each(function(err,result){
+		if(result == null){
+			if(language === "Chinese"){
+				var doc = mdb.collection('gp').find({language:"Cantonese"}).each(function(err,result){
+					if(result == null){
+						var doc = mdb.collection('gp').find({language:"Mandarin"}).each(function(err,result){
+							if(result == null){
+								mdb.close();
+								callback(null,GPLResult);
+							}
+							GPLResult.push(result);
+						});
+					}
+					GPLResult.push(result);
+				})
+			}
+		}
+		GPLResult.push(result);
+	})
+}
 
 app.get("/emergency",function(req,res){
 	var type = req.query.searchType;
 	var location = req.query.myLocation;
+	var language = req.query.language;
 	switch(type){
 		case "hospital":
 		async.waterfall([mlabConnect,async.apply(findHospital,location)],function(err,result){
@@ -189,7 +212,12 @@ app.get("/emergency",function(req,res){
 			res.send(result);
 		});
 		break;
-
+		case "gpl":
+		async.waterfall([mlabConnect,async.apply(findGPL,language)],function(err,result){
+			res.send(result);
+		})
+		console.log("here!")
+		break;
 	}
 })
 app.get("/test",function(req,res){
