@@ -102,7 +102,7 @@ function basicInfo(type,location,callback){
 	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
 	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+s1key;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
 	console.log(purl);
 	https.get(purl, function(response) {
 		var body ="";
@@ -145,7 +145,7 @@ function detailedInfo(final,callback){
         ++count;
 		var placeId = final[i].place_id;
 		//Google API address.
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + s1key;
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + g1key;
         function back (durl,i){
 		https.get(durl,function(response) {
 			var body ="";
@@ -196,7 +196,7 @@ function findHospital(thelocation,callback){
 	var location2 = parseFloat(location[1]);
 	// Use Built-in Near function for hospital queries.
 	// Return only 3 results, the max distance is 10000.
-	var doc = mdb.collection('hosp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 10000}}}).limit(3).each(function(err,result){
+	var doc = mdb.collection('hosp').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 50000}}}).limit(3).each(function(err,result){
 		if(result == null){
 			mdb.close();
 			callback(null,hospitalResult);
@@ -217,7 +217,7 @@ function findPolice(thelocation,callback){
 	var location2 = parseFloat(location[1]);
 	// Use Built-in Near function for hospital queries.
 	// Return only 3 results, the max distance is 10000.
-	var doc = mdb.collection('police').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 10000}}}).limit(3).each(function(err,result){
+	var doc = mdb.collection('police').find({ geometry: { $near: { $geometry: { type: "Point", coordinates: [location1,location2]},$maxDistance: 50000}}}).limit(3).each(function(err,result){
 		if(result == null){
 			mdb.close();
 			callback(null,policeResult);
