@@ -261,19 +261,21 @@ function findGPL(language,callback){
 							if(result == null){
 								mdb.close();
 								callback(null,GPLResult);
-							}
+							}else{
 							GPLResult.push(result);
+							}
 						});
-					}
+					}else{
 					GPLResult.push(result);
+					}
 				})
-			}
-			else{
+			}else{
 			mdb.close();
 			callback(null, GPLResult);
 			}
-		}
+		}else{
 		GPLResult.push(result);
+		}
 	})
 }
 
