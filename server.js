@@ -103,7 +103,7 @@ function basicInfo(type,location,keyword,callback){
 	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
 	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g2key;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
 	if(keyword){purl = purl + '&keyword=' + thekeyword};
 	https.get(purl, function(response) {
 		var body ="";
@@ -146,7 +146,7 @@ function detailedInfo(final,callback){
         ++count; 
 		var placeId = final[i].place_id;
 		//Google API address.
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + g2key;
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + g1key;
         function back (durl,i){
 		https.get(durl,function(response) {
 			var body ="";
@@ -178,7 +178,7 @@ function idQuery(theId,callback){
 	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
 	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
 	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + theId + "&key=" + g1key;
+	var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + theId + "&key=" + s1key;
     function back (durl){
 		https.get(durl,function(response) {
 			var body ="";
