@@ -402,7 +402,8 @@ app.get("/generalquery", function(req, res){
 	var type = req.query.searchType;
 	// Initiating location parameters.
 	var location = req.query.myLocation;
-	basicInfo(type, location, function(result){
+	var keyword = req.query.keyword;
+	basicInfo(type, location, keyword, function(result){
 		res.send(arguments[1]);
 	})
 })
