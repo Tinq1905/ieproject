@@ -29,6 +29,9 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 //import PythonShell for running python scripts in Javascript.
 var PythonShell = require('python-shell');
+//import keys to the app.
+var mykey = require("./keylist.js");
+console.log(mykey);
 
 //MongoDB instance initiation.
 var mdb;
@@ -98,12 +101,7 @@ function basicInfo(type,location,keyword,callback){
 	var atype = type;
 	var alocation = location;
 	var thekeyword = keyword;
-	//Google API keys.
-	var g1key = "AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
-	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
-	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+g1key;
+	var purl ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ alocation +"&types="+atype + "&rankby=distance" + "&key="+mykey;
 	if(keyword){purl = purl + '&keyword=' + thekeyword};
 	https.get(purl, function(response) {
 		var body ="";
@@ -135,18 +133,13 @@ function basicInfo(type,location,keyword,callback){
  *websites, etc.
  */
 function detailedInfo(final,callback){
-	//Store Google API keys.
-	var g1key = "AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
-	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
-	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
 	//Initiating a counter.
     var count = 0;
 	for (i=0;i<final.length;i++){
         ++count; 
 		var placeId = final[i].place_id;
 		//Google API address.
-		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + g1key;
+		var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + mykey;
         function back (durl,i){
 		https.get(durl,function(response) {
 			var body ="";
@@ -171,14 +164,12 @@ function detailedInfo(final,callback){
 	}   
 }
 
+/**
+ * A query by id function, for returning the detailed infos for a single place only.
+ */
 function idQuery(theId,callback){
-	//Store Google API keys.
 	var final = [];
-	var g1key = "AIzaSyBN5b3i9TepTRKXV3nH7DlIWo7Hu3Vq1TU";
-	var g2key = "AIzaSyDWr-XTd2CRiUhzGgaGBIYm7_HZE09hgqg";
-	var s1key = "AIzaSyCptoojRETZJtKZCTgk7Oc29Xz0i-B6cv8";
-	var s2key = "AIzaSyAMW8Z_cdUbbVMMviRfe845JBj7xbKhRp4";
-	var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + theId + "&key=" + s1key;
+	var durl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + theId + "&key=" + mykey;
     function back (durl){
 		https.get(durl,function(response) {
 			var body ="";
